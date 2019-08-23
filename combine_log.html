@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{patch_tag}} 结果</title>
+</head>
+<body>
+{% for file in files %}
+    <a target="_blank" href="{{file.name}}/log.html" style="font-size:25px">{{file.name}}</a>
+        &nbsp;&nbsp;&nbsp;{{file.result}}
+    <br>
+    <br>
+
+{% endfor %}
+</body>
+</html>
