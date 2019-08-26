@@ -32,7 +32,7 @@ PLATFORM = 'Android'  # 平台为Windows时设备号需填窗口句柄
 其他参数按照自己的需求对照注释填写即可
 
 ## 3.runner.py 
-利用multiprocessing根据设备数量生成进程池，单个进程里再利用unittest生成每一个脚本的测试测试用例
+利用multiprocessing根据设备数量生成进程池，单个进程里再利用unittest生成每一个脚本的测试用例
 
 ## 4.report.py
 根据模板生成单个airtest脚本测试的报告，重写了airtest源码中若干源码，减少报告中的静态资源的路径依赖
