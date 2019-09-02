@@ -12,15 +12,13 @@ import time
 import json
 import multiprocessing
 
-from utils import CatchErr, RetryFunc
+from utils import CatchErr, RetryFunc, GetCfgData
 from io import open
 from airtest.core.api import auto_setup, log, connect_device
 from airtest.core.helper import device_platform
 from copy import copy
-from config import PLATFORM, MODE
+from constant import LOG_ROOT
 
-BASE = os.path.dirname(os.path.abspath(__file__))
-LOG_ROOT = os.path.join(BASE, 'logs_root')
 
 
 class MyAirtestCase(unittest.TestCase):
@@ -32,7 +30,7 @@ class MyAirtestCase(unittest.TestCase):
 
 	def Init(self, sPath, sPyFileName):
 		self.m_LogRoot = sPath
-		sConn = PLATFORM + ':///' + self.sDevice
+		sConn = GetCfgData('platform') + ':///' + self.sDevice
 		self.m_oDev = connect_device(sConn)
 		sRunTime = datetime.datetime.now().strftime("%H%M%S")
 		self.m_sLogDir = sRunTime + '_' + self.sDevice + '_' + sPyFileName
@@ -127,7 +125,7 @@ def Finish(sLogDir):
 		'files': [json.loads(line) for line in lMsg]
 	}
 	report.render('combine_log.html', sCombineLog, **template_vars)
-
+	return sCombineLog
 
 def NewCase(fPy, sLogDir, sDeviceNum, oQueue=None):
 	"""实例化MyAirtestCase并绑定runCase方法"""
@@ -178,7 +176,7 @@ def RunScript(sDeviceNum, sLogDir, oScripts):
 
 def CreatePools(lAirScripts, lDevices, sPatchTag=None):
 	lSuite = InitSuite(lAirScripts)
-	if MODE == 2:
+	if GetCfgData('mode') == '2':
 		oAirQueue = multiprocessing.Queue()
 		for sAirScript in lSuite:
 			oAirQueue.put(sAirScript)
@@ -196,4 +194,5 @@ def CreatePools(lAirScripts, lDevices, sPatchTag=None):
 		pool.append(p)
 	for p in pool:
 		p.join()
-	Finish(sLogDir)
+	return Finish(sLogDir)
+

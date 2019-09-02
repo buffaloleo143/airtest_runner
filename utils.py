@@ -6,9 +6,37 @@ import logging
 import zipfile
 import traceback
 import requests
+import configparser
 
 from airtest.core.android.adb import ADB
 from functools import wraps
+
+CFG_FILE = 'config.ini'
+
+def GetCfgData(sKey):
+	config = configparser.ConfigParser()
+	config.read(CFG_FILE)
+	if sKey in config.options('baseconf'):
+		sValue = config.get('baseconf', sKey)
+		return sValue
+	else:
+		return ''
+
+def SetCfgData(sKey,sValue):
+	config = configparser.ConfigParser()
+	config.read(CFG_FILE)
+	config.set('baseconf', sKey, sValue)
+	config.write(open(CFG_FILE, "w"))
+
+
+def CreateCfgFile():
+	if not os.path.exists(CFG_FILE):
+		file = open(CFG_FILE, 'w')
+		file.write('[baseconf]\n')
+		file.close()
+
+
+CreateCfgFile()
 
 
 def GetValidDevices():
@@ -19,14 +47,14 @@ def GetValidDevices():
 
 
 def GetDeviceNum():
-	from config import DEVICE_NUM
+	sDevices = GetCfgData('devices')
 	lDevice = GetValidDevices()
-	if not DEVICE_NUM:
+	if not sDevices and lDevice:
 		return [lDevice[0]]
-	elif 'all' in DEVICE_NUM:
+	elif 'all' in sDevices:
 		return lDevice
 	else:
-		return DEVICE_NUM
+		return sDevices.split(',')
 
 
 def ZipFile(sExportPath):

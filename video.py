@@ -6,9 +6,11 @@ pc端录屏
 import types
 import numpy
 import cv2
+import airtest
 import threading
 
 from airtest import aircv
+
 
 INTERVAL = 0.05
 FPS = 10
@@ -48,7 +50,7 @@ def Record(self, bbox):
 		self.m_Lock.acquire()
 		print('Recording...', (bbox[2] - bbox[0], bbox[3] - bbox[1]))
 		try:
-			im = aircv.crop_image(screen.screenshot(None), bbox)
+			im = airtest.aircv.crop_image(screen.screenshot(None), bbox)
 			self.video.write(numpy.array(im))  # 将img convert ndarray
 		except:
 			pass

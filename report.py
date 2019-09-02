@@ -6,13 +6,13 @@ import shutil
 import json
 import airtest.report.report as R
 
-
 from airtest.utils.compat import decode_path
-
+from constant import BASEPATH
 
 TXT_FILE = "log.txt"
 HTML_FILE = "log.html"
 HTML_TPL = "log_template.html"
+MY_STATIC_DIR = 'report_static'
 STATIC_DIR = os.path.dirname(R.__file__)
 
 
@@ -23,11 +23,11 @@ def get_script_info(script_path):
 
 
 def _make_export_dir(self):
-	dirpath = os.path.dirname(__file__)
+	dirpath = BASEPATH
 	logpath = self.script_root
 	# copy static files
 	for subdir in ["css", "fonts", "image", "js"]:
-		dist = os.path.join(dirpath, "airtest_static", subdir)
+		dist = os.path.join(dirpath, MY_STATIC_DIR, subdir)
 		if os.path.exists(dist) and os.path.isdir(dist):
 			continue
 		shutil.rmtree(dist, ignore_errors=True)
@@ -41,7 +41,7 @@ def render(template_name, output_file=None, **template_vars):
 	import jinja2
 	""" 用jinja2渲染html"""
 	env = jinja2.Environment(
-		loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
+		loader=jinja2.FileSystemLoader(BASEPATH),
 		extensions=(),
 		autoescape=True
 	)
@@ -120,8 +120,8 @@ def report(self, template_name, output_file=None, record_list=None):
 	info = json.loads(get_script_info(self.script_root))
 	if self.export_dir:
 		_, self.log_root = self._make_export_dir()
-		# output_file = os.path.join(self.script_root, HTML_FILE)
-		# self.static_root = "static/"
+	# output_file = os.path.join(self.script_root, HTML_FILE)
+	# self.static_root = "static/"
 	if not record_list:
 		record_list = [f for f in os.listdir(self.log_root) if f.endswith(".mp4")]
 	records = [f if self.export_dir else os.path.basename(f) for f in record_list]
@@ -170,8 +170,8 @@ def main(args):
 
 def ReportHtml(subdir):
 	import argparse
-	oArgs = argparse.Namespace(script=None, device=None, outfile=None, static_root='../../../airtest_static',
-							  log_root=None, record=None, export=True, lang=None, plugins=None)
+	oArgs = argparse.Namespace(script=None, device=None, outfile=None, static_root='../../../%s' % MY_STATIC_DIR,
+							   log_root=None, record=None, export=True, lang=None, plugins=None)
 	oArgs.script = subdir
 	oArgs.outfile = os.path.join(subdir, HTML_FILE)
 	result = main(oArgs)
