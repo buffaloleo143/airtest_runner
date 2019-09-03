@@ -33,7 +33,7 @@ class MyAirtestCase(unittest.TestCase):
 		sConn = GetCfgData('platform') + ':///' + self.sDevice
 		self.m_oDev = connect_device(sConn)
 		sRunTime = datetime.datetime.now().strftime("%H%M%S")
-		self.m_sLogDir = sRunTime + '_' + self.sDevice + '_' + sPyFileName
+		self.m_sLogDir = sRunTime + '_' + self.sDevice.replace(':', '') + '_' + sPyFileName
 		self.logdir = os.path.join(sPath, self.m_sLogDir)
 
 	@classmethod
