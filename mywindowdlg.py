@@ -21,6 +21,7 @@ def InitWindow():
 	oMyWindow.show()
 	return oMyWindow
 
+
 class SingleInst(object):
 	oMgrObj = None
 
@@ -47,6 +48,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow, SingleInst):
 		self.InitListWidget()
 		self.InitSignal()
 		self.m_ScriptRoot = utils.GetCfgData('scripts_root')
+		self.m_ADB = ADB()
 		self.RefreshScripts()
 		self.RefreshADB()
 		self.m_Running = False
@@ -62,9 +64,10 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow, SingleInst):
 		self.BtnSelectScripts.clicked.connect(self.SelectScriptRoot)
 		self.checkBox.stateChanged.connect(self.m_DeviceListWidget.SelcetAll)
 		self.CBScripts.stateChanged.connect(self.m_ScriptListWidget.SelcetAll)
+		self.BtnConnect.clicked.connect(self.ConnectRemoteADB)
 
 	def RefreshADB(self):
-		lDevices = [(tDevice, tDevice[1] == 'device') for tDevice in ADB().devices()]
+		lDevices = [(tDevice, tDevice[1] == 'device') for tDevice in self.m_ADB.devices()]
 		self.m_DeviceListWidget.Refresh(lDevices)
 
 	def RefreshScripts(self):
@@ -121,6 +124,18 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow, SingleInst):
 		self.m_RunThread = CRunthread()
 		self.m_RunThread._signal.connect(self.ShowReport)
 		self.m_RunThread.start()
+
+	def ConnectRemoteADB(self):
+		sText = self.TextAddr.text()
+		sCmd = sText.split()[-2]
+		sAddr = sText.split()[-1]
+		if sCmd == 'connect':
+			ADB(serialno=sAddr)
+		elif sCmd == 'disconnect':
+			ADB(serialno=sAddr).disconnect()
+		else:
+			QtWidgets.QMessageBox.information(self, "提示", self.tr("请输入正确指令！（connect or disconnect）"))
+		self.RefreshADB()
 
 
 class CMyListWidget(object):
@@ -185,10 +200,9 @@ class CRunthread(QtCore.QThread):
 		self._signal.emit(sCombineLog)
 
 
-
-
 if __name__ == '__main__':
 	import multiprocessing
+
 	multiprocessing.freeze_support()
 	app = QtWidgets.QApplication(sys.argv)
 	InitWindow()
