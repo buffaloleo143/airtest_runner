@@ -11,7 +11,7 @@ func-timeout==4.3.5
 future==0.17.1
 hrpc==1.0.8
 idna==2.8
-Jinja2==2.10.1
+Jinja2==2.11.3
 MarkupSafe==1.1.1
 mss==4.0.3
 numpy==1.15.1
