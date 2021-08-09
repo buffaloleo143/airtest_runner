@@ -26,7 +26,7 @@ PyQt5==5.13.0
 PyQt5-sip==4.19.18
 pyqt5-tools==5.13.0.1.5
 python-dotenv==0.10.3
-pywin32==224
+pywin32==301
 pywin32-ctypes==0.2.0
 pywinauto==0.6.3
 requests==2.22.0
