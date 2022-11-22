@@ -17,7 +17,7 @@ mss==4.0.3
 numpy==1.15.1
 opencv-contrib-python==3.4.2.17
 pefile==2019.4.18
-Pillow==6.1.0
+Pillow==9.3.0
 pocoui==1.0.76
 py==1.8.0
 PyInstaller==3.5
