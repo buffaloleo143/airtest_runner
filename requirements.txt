@@ -1,6 +1,6 @@
 airtest==1.0.27
 altgraph==0.16.1
-certifi==2019.6.16
+certifi==2022.12.7
 chardet==3.0.4
 Click==7.0
 comtypes==1.1.7
